@@ -1,12 +1,10 @@
 package it.rosani.simplerun.ui.main
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
@@ -25,6 +22,7 @@ import androidx.navigation.compose.composable
 import it.rosani.simplerun.R
 import it.rosani.simplerun.ext.isLocationPermissionGranted
 import it.rosani.simplerun.ui.components.RequestLocationModal
+import it.rosani.simplerun.ui.components.SimpleRunBottomAppBar
 import it.rosani.simplerun.ui.main.runs_list.RunsList
 import it.rosani.simplerun.ui.main.settings.Settings
 import it.rosani.simplerun.ui.theme.SimplerunTheme
@@ -50,12 +48,12 @@ fun NavGraphBuilder.addHomeGraph(
 
 enum class HomeSections(
     @StringRes val title: Int,
-    val icon: ImageVector,
+    @DrawableRes val icon: Int,
     val route: String
 ) {
-    MAIN(R.string.home_main, Icons.Outlined.CheckCircle, "home/map"),
-    SETTINGS(R.string.home_settings, Icons.Outlined.Settings, "home/settings"),
-    RUNS_LIST(R.string.home_runs_list, Icons.Outlined.Check, "home/runs_list"),
+    RUNS_LIST(R.string.home_runs_list, R.drawable.ic_runs_list, "home/your_runs"),
+    MAIN(R.string.home_main, R.drawable.ic_running, "home/start"),
+    SETTINGS(R.string.home_settings, R.drawable.ic_settings, "home/settings"),
 
 }
 
@@ -75,7 +73,17 @@ fun Main(
 
     val scope = rememberCoroutineScope()
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        bottomBar = {
+            SimpleRunBottomAppBar(
+                tabs = HomeSections.entries.toTypedArray(),
+                currentRoute = HomeSections.MAIN.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { innerPadding ->
         Surface(
             modifier = Modifier.padding(innerPadding),
             color = MaterialTheme.colorScheme.background
