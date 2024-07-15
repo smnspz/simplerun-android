@@ -28,8 +28,6 @@ fun RequestLocationModal(
     sheetState: SheetState,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     val locationPermissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -41,6 +39,8 @@ fun RequestLocationModal(
             val permissionGranted = permissions.values.reduce { acc, granted -> acc && granted }
             if (permissionGranted) {
                 onLocationPermissionGranted()
+            } else {
+                onDismissRequest()
             }
         }
     )
@@ -76,10 +76,10 @@ fun RequestLocationModal(
                 )
             }
             Text(
-                text = "I don't want to use the app",
+                text = "I just want to take a look around",
                 modifier = Modifier
                     .padding(top = 12.dp)
-                    .clickable { (context as? ComponentActivity)?.finish() },
+                    .clickable { onDismissRequest() },
                 fontSize = 12.sp,
                 textDecoration = TextDecoration.Underline,
             )
