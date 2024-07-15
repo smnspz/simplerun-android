@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -63,7 +64,6 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
-//    implementation(libs.navigation.dynamic.features)
     implementation(libs.navigation.ui.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.osmdroid)
