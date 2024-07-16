@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
-import it.rosani.simplerun.ui.main.HomeSections
+import it.rosani.simplerun.models.HomeSections
 import it.rosani.simplerun.ui.main.addHomeGraph
 import it.rosani.simplerun.ui.navigation.MainDestinations
 import it.rosani.simplerun.ui.navigation.rememberSimpleRunNavController
