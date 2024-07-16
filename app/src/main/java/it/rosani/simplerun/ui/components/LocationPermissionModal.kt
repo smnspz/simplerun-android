@@ -3,12 +3,18 @@ package it.rosani.simplerun.ui.components
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -123,6 +129,31 @@ fun SimpleRunBottomSheetScaffold(
             content(paddingValues)
         }
     )
+}
+
+@Composable
+fun ModalDismissOverlay(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .clickable(
+                    enabled = true,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { onDismissRequest() }
+                .alpha(0.7f),
+            color = Color.DarkGray,
+        ) {}
+    }
 }
 
 @Preview(showBackground = true)
