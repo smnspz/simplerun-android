@@ -2,11 +2,14 @@ package it.rosani.simplerun.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import it.rosani.simplerun.ext.toSnakeCase
 import it.rosani.simplerun.ui.main.HomeSections
 
 @Composable
@@ -67,27 +71,25 @@ fun SimpleRunBottomNavigationItem(
     navigateToRoute: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val route = context.getString(title).replace(" ", "_").lowercase()
+    val route = context.getString(title).toSnakeCase()
 
     Column(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        IconButton(
-            modifier = modifier.clip(RoundedCornerShape(4.dp)),
-            onClick = {
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .clickable {
                 if (currentRoute != "home/$route") {
                     navigateToRoute("home/$route")
                 }
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "$title icon",
-                modifier = Modifier.size(30.dp)
-            )
-        }
+            },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = "$title icon",
+            modifier = Modifier.size(30.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = LocalContext.current.getString(title),
             textAlign = TextAlign.Center,
