@@ -2,8 +2,9 @@
     <string name="app_name">simplerun</string>
     <string name="home_main">Start</string>
     <string name="home_settings">Settings</string>
-    <string name="home_runs_list">Your runs</string>
+    <string name="home_runs_list">Your Runs</string>
     <string name="request_location_permission_title">We Value Your Privacy</string>
-    <string name="request_location_permission_text">To enhance your running experience, we need access to your location. We use your data only to find safe routes, give real-time alerts, and provide weather and traffic updates. Your information is private, secure, and never shared.
-</string>
+    <string name="request_location_permission_text">To enhance your running experience, we need access to your location. We use your data only to find safe routes, give real-time alerts, and provide weather and traffic updates. Your information is private, secure, and never shared.</string>
+    <string name="request_location_permission_accept_btn">I accept location permissions</string>
+    <string name="request_location_permission_deny_txt">I just want to take a look around</string>
 </resources>
