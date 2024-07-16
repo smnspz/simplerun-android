@@ -1,5 +1,6 @@
-package it.rosani.simplerun.ui.main.map
+package it.rosani.simplerun.ui.main
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
