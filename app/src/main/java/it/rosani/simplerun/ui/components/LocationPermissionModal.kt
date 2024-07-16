@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -17,13 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import it.rosani.simplerun.R
+import it.rosani.simplerun.ext.isLocationPermissionGranted
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestLocationModal(
     onDismissRequest: () -> Unit,
     onLocationPermissionGranted: () -> Unit,
-    sheetState: SheetState,
     modifier: Modifier = Modifier
 ) {
     val locationPermissions = arrayOf(
@@ -43,56 +44,92 @@ fun RequestLocationModal(
         }
     )
 
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        sheetState = sheetState
+    Column(
+        modifier = modifier.padding(vertical = 8.dp, horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = modifier.padding(vertical = 8.dp, horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.request_location_permission_title)
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            textAlign = TextAlign.Justify,
+            text = stringResource(R.string.request_location_permission_text)
+        )
+        Button(onClick = { locationPermissionLauncher.launch(locationPermissions) }) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                text = stringResource(R.string.request_location_permission_title)
+                text = stringResource(R.string.request_location_permission_accept_btn),
+                fontWeight = FontWeight.Bold
             )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                textAlign = TextAlign.Justify,
-                text = stringResource(R.string.request_location_permission_text)
-            )
-            Button(onClick = { locationPermissionLauncher.launch(locationPermissions) }) {
-                Text(
-                    text = "I accept location permissions",
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Text(
-                text = "I just want to take a look around",
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .clickable { onDismissRequest() },
-                fontSize = 12.sp,
-                textDecoration = TextDecoration.Underline,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
         }
+        Text(
+            text = stringResource(R.string.request_location_permission_deny_txt),
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .clickable { onDismissRequest() },
+            fontSize = 12.sp,
+            textDecoration = TextDecoration.Underline,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleRunBottomSheetScaffold(
+    modifier: Modifier = Modifier,
+    bottomSheetState: SheetState,
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    val context = LocalContext.current
+
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        if (!context.isLocationPermissionGranted()) {
+            bottomSheetState.expand()
+        }
+    }
+
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            RequestLocationModal(
+                onDismissRequest = {
+                    scope.launch {
+                        bottomSheetState.hide()
+                    }
+                },
+                onLocationPermissionGranted = {
+                    scope.launch {
+                        bottomSheetState.hide()
+                    }
+                }
+            )
+        },
+        sheetPeekHeight = 0.dp,
+        modifier = modifier.fillMaxSize(),
+        content = { paddingValues ->
+            content(paddingValues)
+        }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun RequestLocationModalPreview() {
     RequestLocationModal(
         onDismissRequest = {},
         onLocationPermissionGranted = {},
-        sheetState = rememberStandardBottomSheetState()
     )
 }
