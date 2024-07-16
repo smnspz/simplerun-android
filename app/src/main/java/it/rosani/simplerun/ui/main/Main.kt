@@ -2,6 +2,12 @@ package it.rosani.simplerun.ui.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,19 +16,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import it.rosani.simplerun.R
-import it.rosani.simplerun.ext.isLocationPermissionGranted
-import it.rosani.simplerun.ui.components.RequestLocationModal
 import it.rosani.simplerun.ui.components.SimpleRunBottomAppBar
+import it.rosani.simplerun.ui.components.SimpleRunBottomSheetScaffold
 import it.rosani.simplerun.ui.main.runs_list.RunsList
 import it.rosani.simplerun.ui.main.settings.Settings
 import it.rosani.simplerun.ui.theme.SimplerunTheme
@@ -64,44 +74,77 @@ fun Main(
     upPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    val sheetState = rememberStandardBottomSheetState(
+    var showLocationPermissionRequest by remember { mutableStateOf(false) }
+
+    val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
         skipHiddenState = false
     )
 
-    val scope = rememberCoroutineScope()
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = bottomSheetState
+    )
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        bottomBar = {
-            SimpleRunBottomAppBar(
-                tabs = HomeSections.entries.toTypedArray(),
-                currentRoute = HomeSections.MAIN.route,
-                navigateToRoute = onNavigateToRoute
-            )
-        },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    val dismissSheet: () -> Unit = {
+        scope.launch {
+            bottomSheetState.hide()
+            showLocationPermissionRequest = false
+        }
+    }
+
+    SimpleRunBottomSheetScaffold(
+        bottomSheetState = bottomSheetState,
+        bottomSheetScaffoldState = bottomSheetScaffoldState,
     ) { innerPadding ->
-        Surface(
-            modifier = Modifier.padding(innerPadding),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Map(modifier = Modifier.fillMaxSize())
-
-            LaunchedEffect(Unit) {
-                if (!context.isLocationPermissionGranted()) {
-                    sheetState.show()
-                }
-            }
-
-            if (!context.isLocationPermissionGranted()) {
-                RequestLocationModal(
-                    onDismissRequest = { scope.launch { sheetState.hide() } },
-                    onLocationPermissionGranted = { scope.launch { sheetState.hide() } },
-                    sheetState = sheetState
+        Scaffold(
+            bottomBar = {
+                SimpleRunBottomAppBar(
+                    modifier = Modifier.padding(innerPadding),
+                    tabs = HomeSections.entries.toTypedArray(),
+                    currentRoute = HomeSections.MAIN.route,
+                    navigateToRoute = onNavigateToRoute
                 )
+            },
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        ) { scaffoldPadding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                Surface(
+                    modifier = modifier
+                        .padding(scaffoldPadding)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            enabled = bottomSheetState.currentValue == SheetValue.Expanded,
+                        ) {
+                            dismissSheet()
+                        },
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Map(modifier = Modifier.apply {
+                        fillMaxSize()
+                    })
+                }
+
+                // Overlay to hide the bottom sheet when the user clicks on the map
+                AnimatedVisibility(
+                    visible = bottomSheetState.currentValue == SheetValue.Expanded,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                enabled = true,
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { dismissSheet() }
+                            .alpha(0.7f),
+                        color = Color.DarkGray,
+                    ) {}
+                }
             }
         }
     }
