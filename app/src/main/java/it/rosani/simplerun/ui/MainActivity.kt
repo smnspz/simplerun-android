@@ -21,20 +21,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setupMap() {
-        try {
-            Configuration.getInstance().apply {
-                load(
-                    applicationContext,
-                    applicationContext.getSharedPreferences("osmdroid", MODE_PRIVATE)
-                )
-                userAgentValue = BuildConfig.APPLICATION_ID
-                osmdroidBasePath = applicationContext.filesDir
-                osmdroidTileCache = File(osmdroidBasePath, "tile")
-            }
-            Log.d("MainActivity", "Map setup complete")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("MainActivity", "Error while setting up map", e)
+        Configuration.getInstance().apply {
+            load(
+                applicationContext,
+                applicationContext.getSharedPreferences("osmdroid", MODE_PRIVATE)
+            )
+            userAgentValue = BuildConfig.APPLICATION_ID
+            osmdroidBasePath = applicationContext.filesDir
+            osmdroidTileCache = File(osmdroidBasePath, "tile")
         }
     }
 }
