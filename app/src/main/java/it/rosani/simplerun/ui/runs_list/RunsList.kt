@@ -1,5 +1,6 @@
 package it.rosani.simplerun.ui.runs_list
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,8 +16,11 @@ fun RunsList(
 ) {
     SimpleRunScaffold(
         currentRoute = HomeSections.RUNS_LIST,
-        navigateToRoute = navigateToRoute
+        navigateToRoute = navigateToRoute,
+        upPress = upPress,
     ) {
-        Text(text = "Runs list", modifier = modifier.padding(it))
+        Box(modifier = modifier.padding(it)) {
+            Text(text = "Runs list")
+        }
     }
 }
