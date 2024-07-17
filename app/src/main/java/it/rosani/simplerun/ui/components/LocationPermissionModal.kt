@@ -51,7 +51,9 @@ fun RequestLocationModal(
     )
 
     Column(
-        modifier = modifier.padding(vertical = 8.dp, horizontal = 32.dp),
+        modifier = modifier
+            .padding(vertical = 8.dp, horizontal = 32.dp)
+            .windowInsetsPadding(WindowInsets.navigationBars),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
