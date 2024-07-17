@@ -32,7 +32,7 @@ private fun NavGraphBuilder.simpleRunNavGraph(
 ) {
     navigation(
         route = MainDestinations.HOME.route,
-        startDestination = HomeSections.MAIN.route
+        startDestination = HomeSections.RUNS_LIST.route
     ) {
         addHomeGraph(onNavigateToRoute, upPress)
     }
