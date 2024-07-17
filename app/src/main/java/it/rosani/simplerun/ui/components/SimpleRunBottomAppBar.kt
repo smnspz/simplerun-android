@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -70,28 +71,32 @@ fun SimpleRunBottomNavigationItem(
     val context = LocalContext.current
     val route = context.getString(title).toSnakeCase()
 
-    Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+    Box(
+        modifier = Modifier
+            .size(70.dp)
             .clickable {
                 if (currentRoute != "home/$route") {
                     navigateToRoute("home/$route")
                 }
             },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = "$title icon",
-            modifier = Modifier.size(30.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = LocalContext.current.getString(title),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelSmall
-        )
+        Column(
+            modifier = modifier.align(Alignment.Center),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "$title icon",
+                modifier = Modifier.size(30.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = LocalContext.current.getString(title),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
     }
 }
 
