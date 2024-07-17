@@ -1,5 +1,9 @@
 package it.rosani.simplerun.ui.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -28,13 +32,27 @@ fun NavGraphBuilder.addHomeGraph(
     upPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    composable(HomeSections.MAIN.route) {
+    composable(
+        route = HomeSections.MAIN.route,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) },
+    ) {
         Main(onNavigateToRoute, upPress, modifier)
     }
-    composable(HomeSections.SETTINGS.route) {
+
+    composable(
+        route = HomeSections.SETTINGS.route,
+        enterTransition = { EnterTransition.None},
+        exitTransition = { ExitTransition.None},
+    ) {
         Settings(onNavigateToRoute, upPress, modifier)
     }
-    composable(HomeSections.RUNS_LIST.route) {
+
+    composable(
+        route = HomeSections.RUNS_LIST.route,
+        enterTransition = { EnterTransition.None},
+        exitTransition = { ExitTransition.None},
+    ) {
         RunsList(onNavigateToRoute, upPress, modifier)
     }
 
@@ -73,9 +91,10 @@ fun Main(
     ) { innerPadding ->
         SimpleRunScaffold(
             currentRoute = HomeSections.MAIN,
-            navigateToRoute = onNavigateToRoute
+            navigateToRoute = onNavigateToRoute,
+            upPress = upPress
         ) { paddingValues ->
-            MainLayout(bottomBarHeight = paddingValues.calculateBottomPadding())
+            Map()
 
             // Overlay to hide the bottom sheet when the user clicks on the map
             ModalDismissOverlay(
