@@ -94,6 +94,7 @@ fun RequestLocationModal(
 @Composable
 fun SimpleRunBottomSheetScaffold(
     modifier: Modifier = Modifier,
+    onLocationPermissionGranted: () -> Unit,
     bottomSheetState: SheetState,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
     content: @Composable (PaddingValues) -> Unit
@@ -120,6 +121,7 @@ fun SimpleRunBottomSheetScaffold(
                 },
                 onLocationPermissionGranted = {
                     scope.launch {
+                        onLocationPermissionGranted()
                         bottomSheetState.hide()
                     }
                 }
