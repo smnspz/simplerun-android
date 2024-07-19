@@ -9,9 +9,10 @@ import it.rosani.simplerun.ui.main.addHomeGraph
 import it.rosani.simplerun.ui.navigation.MainDestinations
 import it.rosani.simplerun.ui.navigation.rememberSimpleRunNavController
 import it.rosani.simplerun.ui.theme.SimplerunTheme
+import it.rosani.simplerun.viewmodels.MainViewModel
 
 @Composable
-fun SimpleRunApp() {
+fun SimpleRunApp(viewModel: MainViewModel) {
     SimplerunTheme {
         val simpleRunNavController = rememberSimpleRunNavController()
         NavHost(
@@ -21,6 +22,7 @@ fun SimpleRunApp() {
             simpleRunNavGraph(
                 onNavigateToRoute = simpleRunNavController::navigateToRoute,
                 upPress = simpleRunNavController::upPress,
+                viewModel = viewModel
             )
         }
     }
@@ -29,11 +31,12 @@ fun SimpleRunApp() {
 private fun NavGraphBuilder.simpleRunNavGraph(
     onNavigateToRoute: (String) -> Unit,
     upPress: () -> Unit,
+    viewModel: MainViewModel
 ) {
     navigation(
         route = MainDestinations.HOME.route,
         startDestination = HomeSections.RUNS_LIST.route
     ) {
-        addHomeGraph(onNavigateToRoute, upPress)
+        addHomeGraph(onNavigateToRoute, upPress, viewModel)
     }
 }
