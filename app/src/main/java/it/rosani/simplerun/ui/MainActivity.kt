@@ -1,26 +1,35 @@
 package it.rosani.simplerun.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import it.rosani.simplerun.BuildConfig
+import it.rosani.simplerun.ext.isLocationPermissionGranted
+import it.rosani.simplerun.services.location_service.LocationService
+import it.rosani.simplerun.viewmodels.MainViewModel
 import org.osmdroid.config.Configuration
 import java.io.File
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupMap()
+        viewModel.bindLocationService()
         enableEdgeToEdge()
+        if (isLocationPermissionGranted()) {
+            startService(Intent(this, LocationService::class.java))
+        }
         setContent {
-            SimpleRunApp()
+            SimpleRunApp(viewModel)
         }
     }
 
-    private fun setupMap() {
+    fun setupMap() {
         Configuration.getInstance().apply {
             load(
                 applicationContext,
@@ -30,5 +39,18 @@ class MainActivity : ComponentActivity() {
             osmdroidBasePath = applicationContext.filesDir
             osmdroidTileCache = File(osmdroidBasePath, "tile")
         }
+    }
+
+    fun clearMap() {
+        Configuration.getInstance().osmdroidTileCache.delete()
+    }
+
+    fun startLocationService() {
+        startService(Intent(this, LocationService::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.unbindLocationService()
     }
 }
