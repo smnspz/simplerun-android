@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import it.rosani.simplerun.BuildConfig
 import it.rosani.simplerun.ext.isLocationPermissionGranted
 import it.rosani.simplerun.services.location_service.LocationService
@@ -14,6 +15,7 @@ import org.osmdroid.config.Configuration
 import java.io.File
 
 
+@AndroidEntryPoint()
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
