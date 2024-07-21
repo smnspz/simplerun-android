@@ -1,17 +1,21 @@
 package it.rosani.simplerun.viewmodels
 
-import android.app.Application
 import android.location.Location
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import it.rosani.simplerun.services.location_service.LocationServiceManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val locationServiceManager = LocationServiceManager(application)
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val locationServiceManager: LocationServiceManager
+) : ViewModel() {
+
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location.asStateFlow()
 

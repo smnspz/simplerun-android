@@ -6,10 +6,17 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.location.Location
 import android.os.IBinder
+import dagger.Module
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LocationServiceManager(private val context: Context) {
+@Singleton
+class LocationServiceManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     private var isLocationServiceBound = false
     private var locationService: LocationService? = null
 
