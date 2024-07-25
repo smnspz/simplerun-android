@@ -1,9 +1,8 @@
 package it.rosani.simplerun.services.location_service
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Binder
 import android.os.Looper
@@ -16,13 +15,14 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import it.rosani.simplerun.ext.isLocationPermissionGranted
 
 class LocationService : Service() {
     val location = MutableLiveData<Location?>(null)
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            Log.d("LocationService", locationResult.toString())
             locationResult.lastLocation?.let { onLocationChanged(it) }
         }
     }
@@ -40,18 +40,13 @@ class LocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("LocationService", "onStartCommand")
         requestLocationUpdates()
         return START_STICKY
     }
 
+    @SuppressLint("MissingPermission")
     private fun requestLocationUpdates() {
-        val fineLocationPermission =
-            applicationContext.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        val coarseLocationPermission =
-            applicationContext.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        if (fineLocationPermission == PackageManager.PERMISSION_GRANTED || coarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+        if (applicationContext.isLocationPermissionGranted()) {
             val locationRequest =
                 LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000).apply {
                     setMinUpdateDistanceMeters(10f)
