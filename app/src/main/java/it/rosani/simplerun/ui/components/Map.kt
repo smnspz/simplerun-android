@@ -1,4 +1,4 @@
-package it.rosani.simplerun.ui.main
+package it.rosani.simplerun.ui.components
 
 import android.graphics.drawable.Drawable
 import android.location.Location
