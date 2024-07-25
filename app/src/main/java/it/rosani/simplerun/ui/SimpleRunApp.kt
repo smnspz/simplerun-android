@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
 import it.rosani.simplerun.models.HomeSections
 import it.rosani.simplerun.ui.main.addHomeGraph
+import it.rosani.simplerun.ui.run.addRunGraph
 import it.rosani.simplerun.ui.navigation.MainDestinations
 import it.rosani.simplerun.ui.navigation.rememberSimpleRunNavController
 import it.rosani.simplerun.ui.theme.SimplerunTheme
@@ -38,5 +39,6 @@ private fun NavGraphBuilder.simpleRunNavGraph(
         startDestination = HomeSections.RUNS_LIST.route
     ) {
         addHomeGraph(onNavigateToRoute, upPress, viewModel)
+        addRunGraph(onNavigateToRoute, upPress)
     }
 }
