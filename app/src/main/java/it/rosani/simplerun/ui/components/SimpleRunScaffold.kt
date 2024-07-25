@@ -35,7 +35,9 @@ fun SimpleRunScaffold(
                         navigateToRoute = navigateToRoute
                     )
                 } else {
-                    MainBottomAppBar()
+                    MainBottomAppBar(
+                        navigateToRoute = navigateToRoute
+                    )
                 }
             },
             topBar = {
