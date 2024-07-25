@@ -15,17 +15,13 @@ import org.osmdroid.config.Configuration
 import java.io.File
 
 
-@AndroidEntryPoint()
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.bindLocationService()
         enableEdgeToEdge()
-        if (isLocationPermissionGranted()) {
-            startService(Intent(this, LocationService::class.java))
-        }
         setContent {
             SimpleRunApp(viewModel)
         }
@@ -48,6 +44,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun startLocationService() {
+        viewModel.bindLocationService()
         startService(Intent(this, LocationService::class.java))
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,8 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import it.rosani.simplerun.ext.isLocationPermissionGranted
 import it.rosani.simplerun.models.HomeSections
 import it.rosani.simplerun.ui.MainActivity
+import it.rosani.simplerun.ui.components.Map
 import it.rosani.simplerun.ui.components.ModalDismissOverlay
 import it.rosani.simplerun.ui.components.SimpleRunBottomSheetScaffold
 import it.rosani.simplerun.ui.components.SimpleRunScaffold
@@ -109,6 +112,14 @@ fun Main(
                 location = viewModel.location.collectAsState(),
                 modifier = modifier.padding(paddingValues)
             )
+
+            LaunchedEffect(Unit) {
+                context.apply {
+                    if (isLocationPermissionGranted()) {
+                        (this as? MainActivity)?.startLocationService()
+                    }
+                }
+            }
 
             // Overlay to hide the bottom sheet when the user clicks on the map
             ModalDismissOverlay(
